@@ -1,0 +1,39 @@
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "TrollGui"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+-- Кнопка
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 200, 0, 50)
+button.Position = UDim2.new(0.5, -100, 0.5, -25)
+button.Text = "Нажми на меня"
+button.TextScaled = true
+button.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+button.Parent = gui
+
+button.MouseButton1Click:Connect(function()
+    local character = player.Character or player.CharacterAdded:Wait()
+    if not character then return end
+
+    -- Запускаем бесконечные взрывы (каждые 0.3 секунды)
+    local exploding = true
+    task.spawn(function()
+        while exploding and character and character.Parent do
+            local pos = character:GetPivot().Position
+            local boom = Instance.new("Explosion")
+            boom.Position = pos
+            boom.BlastRadius = 8
+            boom.BlastPressure = 0        -- без урона (чисто визуал)
+            boom.DestroyJointRadiusPercent = 0
+            boom.Visible = true
+            boom.Parent = workspace
+            task.wait(0.3)
+        end
+    end)
+
+    -- Через 5 секунд кикаем игрока
+    task.wait(5)
+    exploding = false
+    player:Kick("ты лох ебаный / затролен dexter")
+end)
